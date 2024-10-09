@@ -18,11 +18,11 @@ import java.lang.Exception;
 
 
 public class RecipeService {
-    private MongoCollection<Document> recipeCollection;
+    private MongoCollection<Recipe> recipeCollection;
 
     public RecipeService() {
         MongoDatabase database = MongoDBConnection.getDatabase();
-        recipeCollection = database.getCollection("recipes");
+        recipeCollection = database.getCollection("recipes", Recipe.class);
     }
 
     public void addRecipe(Recipe recipe) {
@@ -32,7 +32,7 @@ public class RecipeService {
                     .append("instructions", recipe.getInstructions())
                     .append("nutritionalInfo", recipe.getNutritionalInfo())
                     .append("sourceUrl", recipe.getSourceUrl());
-            recipeCollection.insertOne(doc);
+            recipeCollection.insertOne(recipe);
         } catch (Exception e) {
             throw new RuntimeException("Failed to add recipe: " + e.getMessage());
         }
@@ -41,9 +41,8 @@ public class RecipeService {
     public List<Recipe> getAllRecipes() {
         try {
             List<Recipe> recipes = new ArrayList<>();
-            FindIterable<Document> docs = recipeCollection.find();
-            for (Document doc : docs) {
-                Recipe recipe = convertDocumentToRecipe(doc);
+            FindIterable<Recipe> docs = recipeCollection.find(Recipe.class);
+            for (Recipe recipe : docs) {
                 recipes.add(recipe);
             }
             return recipes;
@@ -57,9 +56,29 @@ public class RecipeService {
             Recipe recipe = new Recipe();
             recipe.setId(doc.getObjectId("_id"));
             recipe.setTitle(doc.getString("title"));
-            recipe.setIngredients((List<Ingredient>) doc.get("ingredients"));
+            List<Document> ingredientDocs = (List<Document>) doc.get("ingredients");
+            List<Ingredient> ingredients = new ArrayList<>();
+            for (Document ingredientDoc : ingredientDocs) {
+                Ingredient ingredient = new Ingredient();
+                ingredient.setName(ingredientDoc.getString("name"));
+                ingredient.setQuantity(ingredientDoc.getString("quantity"));
+                ingredient.setUnit(ingredientDoc.getString("unit"));
+                ingredients.add(ingredient);
+            }
+            recipe.setIngredients(ingredients);
             recipe.setInstructions((List<String>) doc.get("instructions"));
-            recipe.setNutritionalInfo((NutritionalInfo) doc.get("nutritionalInfo"));
+            Document nutritionDoc = (Document) doc.get("nutritionalInfo");
+            if (nutritionDoc != null) {
+                NutritionalInfo nutritionalInfo = new NutritionalInfo();
+                nutritionalInfo.setCalories(nutritionDoc.getDouble("calories"));
+                nutritionalInfo.setFat(nutritionDoc.getDouble("fat"));
+                nutritionalInfo.setProtein(nutritionDoc.getDouble("protein"));
+                nutritionalInfo.setCarbohydrates(nutritionDoc.getDouble("carbohydrates"));
+                nutritionalInfo.setFiber(nutritionDoc.getDouble("fiber"));
+                nutritionalInfo.setSugar(nutritionDoc.getDouble("sugar"));
+                nutritionalInfo.setSodium(nutritionDoc.getDouble("sodium"));
+                recipe.setNutritionalInfo(nutritionalInfo);
+            }
             recipe.setSourceUrl(doc.getString("sourceUrl"));
             return recipe;
         } catch (Exception e) {
