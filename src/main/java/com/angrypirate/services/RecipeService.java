@@ -14,6 +14,8 @@ import com.mongodb.client.FindIterable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Exception;
+
 
 public class RecipeService {
     private MongoCollection<Document> recipeCollection;
@@ -24,33 +26,45 @@ public class RecipeService {
     }
 
     public void addRecipe(Recipe recipe) {
-        Document doc = new Document("title", recipe.getTitle())
-                .append("ingredients", recipe.getIngredients())
-                .append("instructions", recipe.getInstructions())
-                .append("nutritionalInfo", recipe.getNutritionalInfo())
-                .append("sourceUrl", recipe.getSourceUrl());
-        recipeCollection.insertOne(doc);
+        try {
+            Document doc = new Document("title", recipe.getTitle())
+                    .append("ingredients", recipe.getIngredients())
+                    .append("instructions", recipe.getInstructions())
+                    .append("nutritionalInfo", recipe.getNutritionalInfo())
+                    .append("sourceUrl", recipe.getSourceUrl());
+            recipeCollection.insertOne(doc);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to add recipe: " + e.getMessage());
+        }
     }
 
     public List<Recipe> getAllRecipes() {
-        List<Recipe> recipes = new ArrayList<>();
-        FindIterable<Document> docs = recipeCollection.find();
-        for (Document doc : docs) {
-            Recipe recipe = convertDocumentToRecipe(doc);
-            recipes.add(recipe);
+        try {
+            List<Recipe> recipes = new ArrayList<>();
+            FindIterable<Document> docs = recipeCollection.find();
+            for (Document doc : docs) {
+                Recipe recipe = convertDocumentToRecipe(doc);
+                recipes.add(recipe);
+            }
+            return recipes;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load recipes: " + e.getMessage());
         }
-        return recipes;
     }
 
     private Recipe convertDocumentToRecipe(Document doc) {
-        Recipe recipe = new Recipe();
-        recipe.setId(doc.getObjectId("_id"));
-        recipe.setTitle(doc.getString("title"));
-        recipe.setIngredients((List<Ingredient>) doc.get("ingredients"));
-        recipe.setInstructions((List<String>) doc.get("instructions"));
-        recipe.setNutritionalInfo((NutritionalInfo) doc.get("nutritionalInfo"));
-        recipe.setSourceUrl(doc.getString("sourceUrl"));
-        return recipe;
+        try {
+            Recipe recipe = new Recipe();
+            recipe.setId(doc.getObjectId("_id"));
+            recipe.setTitle(doc.getString("title"));
+            recipe.setIngredients((List<Ingredient>) doc.get("ingredients"));
+            recipe.setInstructions((List<String>) doc.get("instructions"));
+            recipe.setNutritionalInfo((NutritionalInfo) doc.get("nutritionalInfo"));
+            recipe.setSourceUrl(doc.getString("sourceUrl"));
+            return recipe;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert document to recipe: " + e.getMessage());
+        }
     }
 
 }
