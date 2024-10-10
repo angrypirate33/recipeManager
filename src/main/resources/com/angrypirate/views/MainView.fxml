@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import com.angrypirate.viewmodels.IngredientViewModel?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.angrypirate.controllers.MainController" spacing="10" padding="10">
+
+    <!-- Search Bar -->
+    <HBox spacing="5">
+        <TextField fx:id="searchField" HBox.hgrow="ALWAYS" promptText="Search for ingredients..."/>
+        <Button text="Search" onAction="#handleSearch"/>
+    </HBox>
+
+    <!-- Search Results -->
+    <TableView fx:id="searchResultsTable" prefHeight="200">
+        <columns>
+            <TableColumn text="Name" prefWidth="200" cellValueFactory="{PropertyValueFactory name}"/>
+            <TableColumn text="FDC ID" prefWidth="100" cellValueFactory="{PropertyValueFactory fdcId}"/>
+        </columns>
+    </TableView>
+
+    <!-- Add Ingredient to Recipe -->
+    <HBox spacing="5">
+        <Label text="Quantity:"/>
+        <TextField fx:id="quantityField" prefWidth="50"/>
+        <Label text="Unit:"/>
+        <TextField fx:id="unitField" prefWidth="50"/>
+        <Button text="Add to Recipe" onAction="#handleAddIngredient"/>
+    </HBox>
+
+    <!-- Recipe Ingredients -->
+    <Label text="Recipe Ingredients:"/>
+    <TableView fx:id="recipeIngredientsTable" prefHeight="200">
+        <columns>
+            <TableColumn text="Name" prefWidth="200" cellValueFactory="{PropertyValueFactory name}"/>
+            <TableColumn text="Quantity" prefWidth="100" cellValueFactory="{PropertyValueFactory quantity}"/>
+            <TableColumn text="Unit" prefWidth="100" cellValueFactory="{PropertyValueFactory unit}"/>
+        </columns>
+    </TableView>
+
+    <!-- Save Recipe -->
+    <HBox spacing="5">
+        <Label text="Recipe Title:"/>
+        <TextField fx:id="recipeTitleField" HBox.hgrow="ALWAYS"/>
+        <Button text="Save Recipe" onAction="#handleSaveRecipe"/>
+    </HBox>
+</VBox>

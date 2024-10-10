@@ -10,7 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,45 @@ public class FoodDataApiService {
     public FoodDataApiService() {
         httpClient = new OkHttpClient();
         objectMapper = new ObjectMapper();
+    }
+
+    public List<Ingredient> searchIngredients(String query) throws IOException {
+        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
+        String url = API_BASE_URL + "foods/search?api_key=" + API_KEY + "&query=" + encodedQuery;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected response code " + response);
+            }
+            assert response.body() != null;
+            String responseBody = response.body().string();
+
+            Map<String, Object> apiResponse = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>() {});
+            return parseSearchResults(apiResponse);
+        }
+    }
+
+    private List<Ingredient> parseSearchResults(Map<String, Object> apiResponse) {
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        List<Map<String, Object>> foods = (List<Map<String, Object>>) apiResponse.get("foods");
+        if (foods != null) {
+            for (Map<String, Object> food : foods) {
+                String fdcId = String.valueOf(food.get("fdcId"));
+                String description = (String) food.get("description");
+
+                Ingredient ingredient = new Ingredient();
+                ingredient.setFdcId(fdcId);
+                ingredient.setName(description);
+
+                ingredients.add(ingredient);
+            }
+        }
+        return ingredients;
     }
 
     public NutritionalInfo getNutritionalInfo(String fdcId) throws IOException {
@@ -50,6 +92,7 @@ public class FoodDataApiService {
             return nutritionalInfo;
         }
     }
+
     public Ingredient getIngredient(String fdcId, double quantity, String unit) throws IOException {
         String url = API_BASE_URL + "food/" + fdcId + "?api_key=" + API_KEY;
 

@@ -1,14 +1,184 @@
 package com.angrypirate.controllers;
 
-import java.io.IOException;
-
-import com.angrypirate.MainApp;
+import com.angrypirate.models.Ingredient;
+import com.angrypirate.viewmodels.IngredientViewModel;
+import com.angrypirate.services.FoodDataApiService;
+import com.angrypirate.services.IngredientService;
+import com.angrypirate.models.Recipe;
+import com.angrypirate.services.RecipeService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainController {
+    @FXML
+    private TextField searchField;
 
     @FXML
-    private void switchToSecondary() throws IOException {
-        MainApp.setRoot("secondary");
+    private TableView<IngredientViewModel> searchResultsTable;
+
+    @FXML
+    private TextField quantityField;
+
+    @FXML
+    private TextField unitField;
+
+    @FXML
+    private TableView<IngredientViewModel> recipeIngredientsTable;
+
+    @FXML
+    private TextField recipeTitleField;
+
+    private ObservableList<IngredientViewModel> searchResults = FXCollections.observableArrayList();
+    private ObservableList<IngredientViewModel> recipeIngredients = FXCollections.observableArrayList();
+
+    private FoodDataApiService apiService = new FoodDataApiService();
+    private IngredientService ingredientService = new IngredientService();
+    private RecipeService recipeService = new RecipeService();
+
+    @FXML
+    public void initialize() {
+        // Initialize the search results table
+        TableColumn<IngredientViewModel, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+
+        TableColumn<IngredientViewModel, String> fdcIdColumn = new TableColumn<>("FDC ID");
+        fdcIdColumn.setCellValueFactory(cellData -> cellData.getValue().fdcIdProperty());
+
+        searchResultsTable.getColumns().setAll(nameColumn, fdcIdColumn);
+        searchResultsTable.setItems(searchResults);
+
+        // Initialize the recipe ingredients table
+        TableColumn<IngredientViewModel, String> recipeNameColumn = new TableColumn<>("Name");
+        recipeNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+
+        TableColumn<IngredientViewModel, String> quantityColumn = new TableColumn<>("Quantity");
+        quantityColumn.setCellValueFactory(cellData -> cellData.getValue().quantityProperty().asString());
+
+        TableColumn<IngredientViewModel, String> unitColumn = new TableColumn<>("Unit");
+        unitColumn.setCellValueFactory(cellData -> cellData.getValue().unitProperty());
+
+        recipeIngredientsTable.getColumns().setAll(recipeNameColumn, quantityColumn, unitColumn);
+        recipeIngredientsTable.setItems(recipeIngredients);
+    }
+
+    @FXML
+    private void handleSearch() {
+        String query = searchField.getText();
+        if (query == null || query.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Search Error", "Please enter a search query.");
+            return;
+        }
+
+        try {
+            List<Ingredient> results = apiService.searchIngredients(query);
+            List<IngredientViewModel> viewModels = new ArrayList<>();
+            for (Ingredient ingredient : results) {
+                viewModels.add(new IngredientViewModel(ingredient));
+            }
+            searchResults.setAll(viewModels);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "API Error", "Failed to retrieve search results.");
+        }
+    }
+
+    @FXML
+    private void handleAddIngredient() {
+        IngredientViewModel selectedViewModel = searchResultsTable.getSelectionModel().getSelectedItem();
+        if (selectedViewModel == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "Please select an ingredient from the search results.");
+            return;
+        }
+
+        String quantityText = quantityField.getText();
+        String unit = unitField.getText();
+
+        if (quantityText == null || quantityText.isEmpty() || unit == null || unit.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter quantity and unit.");
+            return;
+        }
+
+        double quantity;
+        try {
+            quantity = Double.parseDouble(quantityText);
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Input Error", "Quantity must be a valid number.");
+            return;
+        }
+
+        // Clone the selected ingredient and set quantity and unit
+        Ingredient ingredient = new Ingredient();
+        ingredient.setFdcId(selectedViewModel.getFdcId());
+        ingredient.setName(selectedViewModel.getName());
+        ingredient.setQuantity(quantity);
+        ingredient.setUnit(unit);
+
+        // Fetch and set nutritional info
+        try {
+            Ingredient fullIngredient = apiService.getIngredient(ingredient.getFdcId(), quantity, unit);
+            ingredient.setNutritionalInfo(fullIngredient.getNutritionalInfo());
+            ingredient.setLastUpdated(fullIngredient.getLastUpdated());
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "API Error", "Failed to retrieve ingredient details.");
+            return;
+        }
+
+        IngredientViewModel ingredientViewModel = new IngredientViewModel(ingredient);
+        recipeIngredients.add(ingredientViewModel);
+
+        // Clear input fields
+        quantityField.clear();
+        unitField.clear();
+    }
+
+    @FXML
+    private void handleSaveRecipe() {
+        String title = recipeTitleField.getText();
+        if (title == null || title.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter a recipe title.");
+            return;
+        }
+
+        if (recipeIngredients.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Recipe Error", "Recipe must have at least one ingredient.");
+            return;
+        }
+
+        Recipe recipe = new Recipe();
+        recipe.setTitle(title);
+
+        List<Ingredient> ingredients = new ArrayList<>();
+        for (IngredientViewModel viewModel : recipeIngredients) {
+            ingredients.add(viewModel.getIngredient());
+        }
+        recipe.setIngredients(ingredients);
+
+        // Calculate nutritional info
+
+        recipe.setNutritionalInfo(recipeService.calculateRecipeNutrition(recipe));
+
+        // Save recipe
+        recipeService.addRecipe(recipe);
+
+        showAlert(Alert.AlertType.INFORMATION, "Success", "Recipe saved successfully!");
+
+        // Clear recipe data
+        recipeTitleField.clear();
+        recipeIngredients.clear();
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
