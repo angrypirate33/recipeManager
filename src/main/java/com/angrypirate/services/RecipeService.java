@@ -61,7 +61,7 @@ public class RecipeService {
             for (Document ingredientDoc : ingredientDocs) {
                 Ingredient ingredient = new Ingredient();
                 ingredient.setName(ingredientDoc.getString("name"));
-                ingredient.setQuantity(ingredientDoc.getString("quantity"));
+                ingredient.setQuantity(ingredientDoc.getDouble("quantity"));
                 ingredient.setUnit(ingredientDoc.getString("unit"));
                 ingredients.add(ingredient);
             }

@@ -1,5 +1,7 @@
 package com.angrypirate.models;
 
+import java.util.Map;
+
 public class NutritionalInfo {
     private double calories;
     private double fat;
@@ -13,15 +15,15 @@ public class NutritionalInfo {
         // No-argument constructor for serialization in MongoDB.
     }
 
-    public NutritionalInfo(double calories, double fat, double protein, double carbohydrates,
-                           double fiber, double sugar, double sodium) {
-        this.calories = calories;
-        this.fat = fat;
-        this.protein = protein;
-        this.carbohydrates = carbohydrates;
-        this.fiber = fiber;
-        this.sugar = sugar;
-        this.sodium = sodium;
+    public void populateFromApiData(Map<String, Double> nutrients) {
+        this.calories = nutrients.getOrDefault("Energy", 0.0);
+        this.fat = nutrients.getOrDefault("Total lipid (fat)", 0.0);
+        this.protein = nutrients.getOrDefault("Protein", 0.0);
+        this.carbohydrates = nutrients.getOrDefault("Carbohydrate, by difference", 0.0);
+        this.fiber = nutrients.getOrDefault("Fiber, total dietary", 0.0);
+        this.sugar = nutrients.getOrDefault("Sugars, total including NLEA", 0.0);
+        this.sodium = nutrients.getOrDefault("Sodium, Na", 0.0);
+        // Map additional nutrients as needed
     }
 
     public double getCalories() {
@@ -79,4 +81,5 @@ public class NutritionalInfo {
     public void setSodium(double sodium) {
         this.sodium = sodium;
     }
+
 }
