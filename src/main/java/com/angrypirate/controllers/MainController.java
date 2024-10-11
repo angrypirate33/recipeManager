@@ -1,10 +1,10 @@
 package com.angrypirate.controllers;
 
 import com.angrypirate.models.Ingredient;
+import com.angrypirate.models.Recipe;
 import com.angrypirate.viewmodels.IngredientViewModel;
 import com.angrypirate.services.FoodDataApiService;
 import com.angrypirate.services.IngredientService;
-import com.angrypirate.models.Recipe;
 import com.angrypirate.services.RecipeService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,19 +20,33 @@ public class MainController {
     private TextField searchField;
 
     @FXML
-    private TableView<IngredientViewModel> searchResultsTable;
-
-    @FXML
     private TextField quantityField;
 
     @FXML
     private TextField unitField;
 
     @FXML
+    private TextField recipeTitleField;
+    @FXML
+    private TableView<IngredientViewModel> searchResultsTable;
+
+    @FXML
+    private TableColumn<IngredientViewModel, String> nameColumn;
+
+    @FXML
+    private TableColumn<IngredientViewModel, String> fdcIdColumn;
+
+    @FXML
     private TableView<IngredientViewModel> recipeIngredientsTable;
 
     @FXML
-    private TextField recipeTitleField;
+    private TableColumn<IngredientViewModel, String> recipeNameColumn;
+
+    @FXML
+    private TableColumn<IngredientViewModel, String> quantityColumn;
+
+    @FXML
+    private TableColumn<IngredientViewModel, String> unitColumn;
 
     private ObservableList<IngredientViewModel> searchResults = FXCollections.observableArrayList();
     private ObservableList<IngredientViewModel> recipeIngredients = FXCollections.observableArrayList();
@@ -43,27 +57,8 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        // Initialize the search results table
-        TableColumn<IngredientViewModel, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-
-        TableColumn<IngredientViewModel, String> fdcIdColumn = new TableColumn<>("FDC ID");
-        fdcIdColumn.setCellValueFactory(cellData -> cellData.getValue().fdcIdProperty());
-
-        searchResultsTable.getColumns().setAll(nameColumn, fdcIdColumn);
+        // Set the items for the tables
         searchResultsTable.setItems(searchResults);
-
-        // Initialize the recipe ingredients table
-        TableColumn<IngredientViewModel, String> recipeNameColumn = new TableColumn<>("Name");
-        recipeNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-
-        TableColumn<IngredientViewModel, String> quantityColumn = new TableColumn<>("Quantity");
-        quantityColumn.setCellValueFactory(cellData -> cellData.getValue().quantityProperty().asString());
-
-        TableColumn<IngredientViewModel, String> unitColumn = new TableColumn<>("Unit");
-        unitColumn.setCellValueFactory(cellData -> cellData.getValue().unitProperty());
-
-        recipeIngredientsTable.getColumns().setAll(recipeNameColumn, quantityColumn, unitColumn);
         recipeIngredientsTable.setItems(recipeIngredients);
     }
 

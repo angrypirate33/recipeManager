@@ -2,12 +2,17 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.Priority?>
 <?import com.angrypirate.viewmodels.IngredientViewModel?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.angrypirate.controllers.MainController" spacing="10" padding="10">
+      fx:controller="com.angrypirate.controllers.MainController" spacing="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
 
     <!-- Search Bar -->
     <HBox spacing="5">
@@ -18,8 +23,16 @@
     <!-- Search Results -->
     <TableView fx:id="searchResultsTable" prefHeight="200">
         <columns>
-            <TableColumn text="Name" prefWidth="200" cellValueFactory="{PropertyValueFactory name}"/>
-            <TableColumn text="FDC ID" prefWidth="100" cellValueFactory="{PropertyValueFactory fdcId}"/>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="200">
+                <cellValueFactory>
+                    <PropertyValueFactory property="name"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="fdcIdColumn" text="FDC ID" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="fdcId"/>
+                </cellValueFactory>
+            </TableColumn>
         </columns>
     </TableView>
 
@@ -36,9 +49,21 @@
     <Label text="Recipe Ingredients:"/>
     <TableView fx:id="recipeIngredientsTable" prefHeight="200">
         <columns>
-            <TableColumn text="Name" prefWidth="200" cellValueFactory="{PropertyValueFactory name}"/>
-            <TableColumn text="Quantity" prefWidth="100" cellValueFactory="{PropertyValueFactory quantity}"/>
-            <TableColumn text="Unit" prefWidth="100" cellValueFactory="{PropertyValueFactory unit}"/>
+            <TableColumn fx:id="recipeNameColumn" text="Name" prefWidth="200">
+                <cellValueFactory>
+                    <PropertyValueFactory property="name"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="quantity"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="unitColumn" text="Unit" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="unit"/>
+                </cellValueFactory>
+            </TableColumn>
         </columns>
     </TableView>
 
