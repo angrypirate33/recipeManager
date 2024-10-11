@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.angrypirate.controllers.RecipesController"
+      spacing="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- Search Bar -->
+    <HBox spacing="5">
+        <TextField fx:id="searchField" HBox.hgrow="ALWAYS" promptText="Search recipes..."/>
+        <Button text="Search" onAction="#handleSearch"/>
+    </HBox>
+
+    <!-- Recipes Table -->
+    <TableView fx:id="recipesTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="titleColumn" text="Title">
+                <cellValueFactory>
+                    <PropertyValueFactory property="title"/>
+                </cellValueFactory>
+            </TableColumn>
+            <!-- Add other columns as needed -->
+        </columns>
+    </TableView>
+
+    <!-- Action Buttons -->
+    <HBox spacing="5">
+        <Button text="View Recipe" onAction="#handleViewRecipe"/>
+        <Button text="Edit Recipe" onAction="#handleEditRecipe"/>
+        <Button text="Delete Recipe" onAction="#handleDeleteRecipe"/>
+    </HBox>
+</VBox>

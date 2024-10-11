@@ -51,6 +51,14 @@ public class MainController {
     private ObservableList<IngredientViewModel> searchResults = FXCollections.observableArrayList();
     private ObservableList<IngredientViewModel> recipeIngredients = FXCollections.observableArrayList();
 
+    @FXML
+    private ListView<String> instructionsListView;
+
+    @FXML
+    private TextField instructionField;
+
+    private ObservableList<String> instructionsList = FXCollections.observableArrayList();
+
     private FoodDataApiService apiService = new FoodDataApiService();
     private IngredientService ingredientService = new IngredientService();
     private RecipeService recipeService = new RecipeService();
@@ -60,6 +68,7 @@ public class MainController {
         // Set the items for the tables
         searchResultsTable.setItems(searchResults);
         recipeIngredientsTable.setItems(recipeIngredients);
+        instructionsListView.setItems(instructionsList);
     }
 
     @FXML
@@ -131,6 +140,17 @@ public class MainController {
         // Clear input fields
         quantityField.clear();
         unitField.clear();
+    }
+
+    @FXML
+    private void handleAddInstruction() {
+        String instruction = instructionField.getText();
+        if (instruction == null || instruction.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter an instruction.");
+            return;
+        }
+        instructionsList.add(instruction);
+        instructionField.clear();
     }
 
     @FXML

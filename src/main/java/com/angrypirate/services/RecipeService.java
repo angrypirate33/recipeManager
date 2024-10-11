@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Exception;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.regex;
+
 
 public class RecipeService {
     private MongoCollection<Recipe> recipeCollection;
@@ -79,6 +82,14 @@ public class RecipeService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to load recipes: " + e.getMessage());
         }
+    }
+
+    public List<Recipe> searchRecipes(String query) {
+        return recipeCollection.find(regex("title", ".*" + query + ".*", "i")).into(new ArrayList<>());
+    }
+
+    public void deleteRecipe(ObjectId id) {
+        recipeCollection.deleteOne(eq("_id", id));
     }
 
     private Recipe convertDocumentToRecipe(Document doc) {
