@@ -1,6 +1,7 @@
 package com.angrypirate.viewmodels;
 
 import com.angrypirate.models.Ingredient;
+import com.angrypirate.models.NutritionalInfo;
 import javafx.beans.property.*;
 
 public class IngredientViewModel {
@@ -8,22 +9,29 @@ public class IngredientViewModel {
 
     private StringProperty fdcId;
     private StringProperty name;
-    private DoubleProperty quantity;
-    private StringProperty unit;
+    private DoubleProperty calories;
+    private DoubleProperty fat;
+    private DoubleProperty protein;
+    private DoubleProperty carbohydrates;
+    private DoubleProperty fiber;
+    private DoubleProperty sugar;
+    private DoubleProperty sodium;
 
     public IngredientViewModel(Ingredient ingredient) {
         this.ingredient = ingredient;
 
-        this.fdcId = new SimpleStringProperty(ingredient.getFdcId());
         this.name = new SimpleStringProperty(ingredient.getName());
-        this.quantity = new SimpleDoubleProperty(ingredient.getQuantity());
-        this.unit = new SimpleStringProperty(ingredient.getUnit());
-
-        // Add listeners to update the underlying Ingredient when properties change
-        this.fdcId.addListener((observable, oldValue, newValue) -> ingredient.setFdcId(newValue));
-        this.name.addListener((observable, oldValue, newValue) -> ingredient.setName(newValue));
-        this.quantity.addListener((observable, oldValue, newValue) -> ingredient.setQuantity(newValue.doubleValue()));
-        this.unit.addListener((observable, oldValue, newValue) -> ingredient.setUnit(newValue));
+        NutritionalInfo nutrition = ingredient.getNutritionalInfo();
+        if (nutrition == null) {
+            nutrition = new NutritionalInfo();
+        }
+        this.calories = new SimpleDoubleProperty(nutrition.getCalories());
+        this.fat = new SimpleDoubleProperty(nutrition.getFat());
+        this.protein = new SimpleDoubleProperty(nutrition.getProtein());
+        this.carbohydrates = new SimpleDoubleProperty(nutrition.getCarbohydrates());
+        this.fiber = new SimpleDoubleProperty(nutrition.getFiber());
+        this.sugar = new SimpleDoubleProperty(nutrition.getSugar());
+        this.sodium = new SimpleDoubleProperty(nutrition.getSodium());
     }
 
     // Getters for properties
@@ -34,10 +42,6 @@ public class IngredientViewModel {
 
     public String getFdcId() {
         return fdcId.get();
-    }
-
-    public void setFdcId(String fdcId) {
-        this.fdcId.set(fdcId);
     }
 
     public StringProperty nameProperty() {
@@ -52,29 +56,90 @@ public class IngredientViewModel {
         this.name.set(name);
     }
 
-    public DoubleProperty quantityProperty() {
-        return quantity;
+    public DoubleProperty caloriesProperty() {
+        return calories;
     }
 
-    public double getQuantity() {
-        return quantity.get();
+    public double getCalories() {
+        return calories.get();
     }
 
-    public void setQuantity(double quantity) {
-        this.quantity.set(quantity);
+    public void setCalories(double calories) {
+        this.calories.set(calories);
     }
 
-    public StringProperty unitProperty() {
-        return unit;
+    public DoubleProperty fatProperty() {
+        return fat;
     }
 
-    public String getUnit() {
-        return unit.get();
+    public double getFat() {
+        return fat.get();
     }
 
-    public void setUnit(String unit) {
-        this.unit.set(unit);
+    public void setFat(double fat) {
+        this.fat.set(fat);
     }
+
+    public DoubleProperty proteinProperty() {
+        return protein;
+    }
+
+    public double getProtein() {
+        return protein.get();
+    }
+
+    public void setProtein(double protein) {
+        this.protein.set(protein);
+    }
+
+    public DoubleProperty carbohydratesProperty() {
+        return carbohydrates;
+    }
+
+    public double getCarbohydrates() {
+        return carbohydrates.get();
+    }
+
+    public void setCarbohydrates(double carbohydrates) {
+        this.carbohydrates.set(carbohydrates);
+    }
+
+    public DoubleProperty fiberProperty() {
+        return fiber;
+    }
+
+    public double getFiber() {
+        return fiber.get();
+    }
+
+    public void setFiber(double fiber) {
+        this.fiber.set(fiber);
+    }
+
+    public DoubleProperty sugarProperty() {
+        return sugar;
+    }
+
+    public double getSugar() {
+        return sugar.get();
+    }
+
+    public void setSugar(double sugar) {
+        this.sugar.set(sugar);
+    }
+
+    public DoubleProperty sodiumProperty() {
+        return sodium;
+    }
+
+    public double getSodium() {
+        return sodium.get();
+    }
+
+    public void setSodium(double sodium) {
+        this.sodium.set(sodium);
+    }
+
     // Getter for the underlying Ingredient
     public Ingredient getIngredient() {
         return ingredient;

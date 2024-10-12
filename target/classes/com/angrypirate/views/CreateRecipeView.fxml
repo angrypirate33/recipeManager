@@ -23,18 +23,49 @@
     <!-- Search Results -->
     <TableView fx:id="searchResultsTable" prefHeight="200">
         <columns>
-            <TableColumn fx:id="nameColumn" text="Name" prefWidth="200">
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="150">
                 <cellValueFactory>
                     <PropertyValueFactory property="name"/>
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="fdcIdColumn" text="FDC ID" prefWidth="100">
+            <TableColumn fx:id="caloriesColumn" text="Calories" prefWidth="80">
                 <cellValueFactory>
-                    <PropertyValueFactory property="fdcId"/>
+                    <PropertyValueFactory property="calories"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="fatColumn" text="Fat (g)" prefWidth="80">
+                <cellValueFactory>
+                    <PropertyValueFactory property="fat"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="proteinColumn" text="Protein (g)" prefWidth="80">
+                <cellValueFactory>
+                    <PropertyValueFactory property="protein"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="carbsColumn" text="Carbs (g)" prefWidth="80">
+                <cellValueFactory>
+                    <PropertyValueFactory property="carbohydrates"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="fiberColumn" text="Fiber (g)" prefWidth="80">
+                <cellValueFactory>
+                    <PropertyValueFactory property="fiber"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="sugarColumn" text="Sugar (g)" prefWidth="80">
+                <cellValueFactory>
+                    <PropertyValueFactory property="sugar"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="sodiumColumn" text="Sodium (mg)" prefWidth="80">
+                <cellValueFactory>
+                    <PropertyValueFactory property="sodium"/>
                 </cellValueFactory>
             </TableColumn>
         </columns>
     </TableView>
+
 
     <!-- Add Ingredient to Recipe -->
     <HBox spacing="5">

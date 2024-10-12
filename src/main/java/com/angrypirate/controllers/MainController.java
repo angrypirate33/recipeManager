@@ -18,33 +18,24 @@ import java.util.List;
 public class MainController {
     @FXML
     private TextField searchField;
-
     @FXML
     private TextField quantityField;
-
     @FXML
     private TextField unitField;
-
     @FXML
     private TextField recipeTitleField;
     @FXML
     private TableView<IngredientViewModel> searchResultsTable;
-
     @FXML
     private TableColumn<IngredientViewModel, String> nameColumn;
-
     @FXML
     private TableColumn<IngredientViewModel, String> fdcIdColumn;
-
     @FXML
     private TableView<IngredientViewModel> recipeIngredientsTable;
-
     @FXML
     private TableColumn<IngredientViewModel, String> recipeNameColumn;
-
     @FXML
     private TableColumn<IngredientViewModel, String> quantityColumn;
-
     @FXML
     private TableColumn<IngredientViewModel, String> unitColumn;
 
@@ -53,7 +44,6 @@ public class MainController {
 
     @FXML
     private ListView<String> instructionsListView;
-
     @FXML
     private TextField instructionField;
 
