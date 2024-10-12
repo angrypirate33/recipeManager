@@ -7,12 +7,12 @@
 <TabPane xmlns="http://javafx.com/javafx/17"
          xmlns:fx="http://javafx.com/fxml/1">
     <tabs>
-        <Tab text="Recipes">
+        <Tab text="Recipes" closable="false">
             <content>
                 <fx:include source="RecipesView.fxml"/>
             </content>
         </Tab>
-        <Tab text="Create Recipe">
+        <Tab text="Create Recipe" closable="false">
             <content>
                 <fx:include source="CreateRecipeView.fxml"/>
             </content>

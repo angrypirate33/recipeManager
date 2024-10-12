@@ -21,7 +21,7 @@
     </HBox>
 
     <!-- Search Results -->
-    <TableView fx:id="searchResultsTable" prefHeight="200">
+    <TableView fx:id="searchResultsTable" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="nameColumn" text="Name" prefWidth="150">
                 <cellValueFactory>
@@ -70,15 +70,15 @@
     <!-- Add Ingredient to Recipe -->
     <HBox spacing="5">
         <Label text="Quantity:"/>
-        <TextField fx:id="quantityField" prefWidth="50"/>
+        <TextField fx:id="quantityField" prefWidth="70"/>
         <Label text="Unit:"/>
-        <TextField fx:id="unitField" prefWidth="50"/>
+        <TextField fx:id="unitField" prefWidth="70"/>
         <Button text="Add to Recipe" onAction="#handleAddIngredient"/>
     </HBox>
 
     <!-- Recipe Ingredients -->
     <Label text="Recipe Ingredients:"/>
-    <TableView fx:id="recipeIngredientsTable" prefHeight="200">
+    <TableView fx:id="recipeIngredientsTable">
         <columns>
             <TableColumn fx:id="recipeNameColumn" text="Name" prefWidth="200">
                 <cellValueFactory>
@@ -97,6 +97,7 @@
             </TableColumn>
         </columns>
     </TableView>
+
     <!-- Instructions Section -->
     <Label text="Instructions:"/>
     <ListView fx:id="instructionsListView" VBox.vgrow="ALWAYS"/>
@@ -107,7 +108,7 @@
     </HBox>
 
     <!-- Save Recipe -->
-    <HBox spacing="5">
+    <HBox spacing="5" alignment="CENTER_RIGHT">
         <Label text="Recipe Title:"/>
         <TextField fx:id="recipeTitleField" HBox.hgrow="ALWAYS"/>
         <Button text="Save Recipe" onAction="#handleSaveRecipe"/>

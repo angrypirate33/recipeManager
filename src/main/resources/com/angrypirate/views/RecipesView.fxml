@@ -23,7 +23,7 @@
     <!-- Recipes Table -->
     <TableView fx:id="recipesTable" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="titleColumn" text="Title">
+            <TableColumn fx:id="titleColumn" text="Title" prefWidth="600">
                 <cellValueFactory>
                     <PropertyValueFactory property="title"/>
                 </cellValueFactory>
@@ -33,7 +33,7 @@
     </TableView>
 
     <!-- Action Buttons -->
-    <HBox spacing="5">
+    <HBox spacing="5" alignment="CENTER_RIGHT">
         <Button text="View Recipe" onAction="#handleViewRecipe"/>
         <Button text="Edit Recipe" onAction="#handleEditRecipe"/>
         <Button text="Delete Recipe" onAction="#handleDeleteRecipe"/>
