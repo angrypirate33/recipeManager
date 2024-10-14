@@ -21,17 +21,6 @@ public class IngredientViewModel {
         this.ingredient = ingredient;
 
         this.name = new SimpleStringProperty(ingredient.getName());
-        NutritionalInfo nutrition = ingredient.getNutritionalInfo();
-        if (nutrition == null) {
-            nutrition = new NutritionalInfo();
-        }
-        this.calories = new SimpleDoubleProperty(nutrition.getCalories());
-        this.fat = new SimpleDoubleProperty(nutrition.getFat());
-        this.protein = new SimpleDoubleProperty(nutrition.getProtein());
-        this.carbohydrates = new SimpleDoubleProperty(nutrition.getCarbohydrates());
-        this.fiber = new SimpleDoubleProperty(nutrition.getFiber());
-        this.sugar = new SimpleDoubleProperty(nutrition.getSugar());
-        this.sodium = new SimpleDoubleProperty(nutrition.getSodium());
     }
 
     // Getters for properties

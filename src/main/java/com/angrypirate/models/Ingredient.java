@@ -2,82 +2,61 @@ package com.angrypirate.models;
 
 import org.bson.types.ObjectId;
 import java.time.LocalDateTime;
+import javafx.beans.property.*;
 
 public class Ingredient {
-    private ObjectId id;
-    private String fdcId;
-    private String name;
-    private double quantity;
-    private String unit;
-    private NutritionalInfo nutritionalInfo;
-    private LocalDateTime lastUpdated;
+    private StringProperty name;
+    private DoubleProperty quantity;
+    private StringProperty unit;
 
     public Ingredient() {
-        // No-argument constructor for serialization in MongoDB.
+        this.name = new SimpleStringProperty();
+        this.quantity = new SimpleDoubleProperty();
+        this.unit = new SimpleStringProperty();
     }
 
-    public Ingredient(String fdcId, String name, double quantity, String unit, NutritionalInfo nutritionalInfo) {
-        this.fdcId = fdcId;
-        this.name = name;
-        this.quantity = quantity;
-        this.unit = unit;
-        this.nutritionalInfo = nutritionalInfo;
-        this.lastUpdated = LocalDateTime.now();
+    public Ingredient(String name, double quantity, String unit) {
+        this.name = new SimpleStringProperty(name);
+        this.quantity = new SimpleDoubleProperty(quantity);
+        this.unit = new SimpleStringProperty(unit);
     }
 
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
-    public String getFdcId() {
-        return fdcId;
-    }
-
-    public void setFdcId(String fdcId) {
-        this.fdcId = fdcId;
-    }
-
-    public String getName() {
+    // Name property
+    public StringProperty nameProperty() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name.get();
     }
 
-    public double getQuantity() {
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    // Quantity property
+    public DoubleProperty quantityProperty() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
+    public double getQuantity() {
+        return quantity.get();
     }
 
-    public String getUnit() {
+    public void setQuantity(double quantity) {
+        this.quantity.set(quantity);
+    }
+
+    // Unit property
+    public StringProperty unitProperty() {
         return unit;
     }
 
+    public String getUnit() {
+        return unit.get();
+    }
+
     public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public NutritionalInfo getNutritionalInfo() {
-        return nutritionalInfo;
-    }
-
-    public void setNutritionalInfo(NutritionalInfo nutritionalInfo) {
-        this.nutritionalInfo = nutritionalInfo;
-    }
-
-    public LocalDateTime getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(LocalDateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
+        this.unit.set(unit);
     }
 }

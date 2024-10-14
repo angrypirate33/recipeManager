@@ -41,36 +41,6 @@ public class RecipeService {
         }
     }
 
-    public NutritionalInfo calculateRecipeNutrition(Recipe recipe) {
-        NutritionalInfo totalNutrition = new NutritionalInfo();
-
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            NutritionalInfo ingNutrition = ingredient.getNutritionalInfo();
-            if (ingNutrition == null) {
-                continue; // Skip if nutritional info is not available
-            }
-            double quantityFactor = ingredient.getQuantity() / 100.0; // Assuming API data is per 100g
-
-            totalNutrition.setCalories(
-                    totalNutrition.getCalories() + ingNutrition.getCalories() * quantityFactor);
-            totalNutrition.setFat(
-                    totalNutrition.getFat() + ingNutrition.getFat() * quantityFactor);
-            totalNutrition.setProtein(
-                    totalNutrition.getProtein() + ingNutrition.getProtein() * quantityFactor);
-            totalNutrition.setCarbohydrates(
-                    totalNutrition.getCarbohydrates() + ingNutrition.getCarbohydrates() * quantityFactor);
-            totalNutrition.setFiber(
-                    totalNutrition.getFiber() + ingNutrition.getFiber() * quantityFactor);
-            totalNutrition.setSugar(
-                    totalNutrition.getSugar() + ingNutrition.getSugar() * quantityFactor);
-            totalNutrition.setSodium(
-                    totalNutrition.getSodium() + ingNutrition.getSodium() * quantityFactor);
-            // Add calculations for any additional nutrients as needed
-        }
-
-        return totalNutrition;
-    }
-
     public List<Recipe> getAllRecipes() {
         try {
             List<Recipe> recipes = new ArrayList<>();

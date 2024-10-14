@@ -3,7 +3,6 @@ package com.angrypirate.controllers;
 import com.angrypirate.models.Ingredient;
 import com.angrypirate.models.Recipe;
 import com.angrypirate.viewmodels.IngredientViewModel;
-import com.angrypirate.services.FoodDataApiService;
 import com.angrypirate.services.IngredientService;
 import com.angrypirate.services.RecipeService;
 import javafx.collections.FXCollections;
@@ -17,84 +16,56 @@ import java.util.List;
 
 public class MainController {
     @FXML
-    private TextField searchField;
+    private TextField ingredientNameField;
     @FXML
     private TextField quantityField;
     @FXML
     private TextField unitField;
     @FXML
-    private TextField recipeTitleField;
+    private TableView<Ingredient> recipeIngredientsTable;
     @FXML
-    private TableView<IngredientViewModel> searchResultsTable;
+    private TableColumn<Ingredient, String> recipeNameColumn;
     @FXML
-    private TableColumn<IngredientViewModel, String> nameColumn;
+    private TableColumn<Ingredient, String> quantityColumn;
     @FXML
-    private TableColumn<IngredientViewModel, String> fdcIdColumn;
-    @FXML
-    private TableView<IngredientViewModel> recipeIngredientsTable;
-    @FXML
-    private TableColumn<IngredientViewModel, String> recipeNameColumn;
-    @FXML
-    private TableColumn<IngredientViewModel, String> quantityColumn;
-    @FXML
-    private TableColumn<IngredientViewModel, String> unitColumn;
-
-    private ObservableList<IngredientViewModel> searchResults = FXCollections.observableArrayList();
-    private ObservableList<IngredientViewModel> recipeIngredients = FXCollections.observableArrayList();
-
+    private TableColumn<Ingredient, String> unitColumn;
     @FXML
     private ListView<String> instructionsListView;
     @FXML
     private TextField instructionField;
+    @FXML
+    private TextField recipeTitleField;
 
-    private ObservableList<String> instructionsList = FXCollections.observableArrayList();
-
-    private FoodDataApiService apiService = new FoodDataApiService();
-    private IngredientService ingredientService = new IngredientService();
+    private ObservableList<Ingredient> recipeIngredients;
+    private ObservableList<String> instructions;
     private RecipeService recipeService = new RecipeService();
 
     @FXML
     public void initialize() {
-        // Set the items for the tables
-        searchResultsTable.setItems(searchResults);
+        recipeIngredients = FXCollections.observableArrayList();
+        instructions = FXCollections.observableArrayList();
+
         recipeIngredientsTable.setItems(recipeIngredients);
-        instructionsListView.setItems(instructionsList);
-    }
+        instructionsListView.setItems(instructions);
 
-    @FXML
-    private void handleSearch() {
-        String query = searchField.getText();
-        if (query == null || query.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Search Error", "Please enter a search query.");
-            return;
-        }
-
-        try {
-            List<Ingredient> results = apiService.searchIngredients(query);
-            List<IngredientViewModel> viewModels = new ArrayList<>();
-            for (Ingredient ingredient : results) {
-                viewModels.add(new IngredientViewModel(ingredient));
-            }
-            searchResults.setAll(viewModels);
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "API Error", "Failed to retrieve search results.");
-        }
+        recipeNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        quantityColumn.setCellValueFactory(cellData -> cellData.getValue().quantityProperty().asObject().asString());
+        unitColumn.setCellValueFactory(cellData -> cellData.getValue().unitProperty());
     }
 
     @FXML
     private void handleAddIngredient() {
-        IngredientViewModel selectedViewModel = searchResultsTable.getSelectionModel().getSelectedItem();
-        if (selectedViewModel == null) {
-            showAlert(Alert.AlertType.WARNING, "Selection Error", "Please select an ingredient from the search results.");
-            return;
-        }
-
+        String name = ingredientNameField.getText();
         String quantityText = quantityField.getText();
         String unit = unitField.getText();
 
-        if (quantityText == null || quantityText.isEmpty() || unit == null || unit.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter quantity and unit.");
+        if (name == null || name.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter an ingredient name.");
+            return;
+        }
+
+        if (quantityText == null || quantityText.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter a quantity.");
             return;
         }
 
@@ -102,32 +73,20 @@ public class MainController {
         try {
             quantity = Double.parseDouble(quantityText);
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Input Error", "Quantity must be a valid number.");
+            showAlert(Alert.AlertType.ERROR, "Input Error", "Please enter a valid number for quantity.");
             return;
         }
 
-        // Clone the selected ingredient and set quantity and unit
-        Ingredient ingredient = new Ingredient();
-        ingredient.setFdcId(selectedViewModel.getFdcId());
-        ingredient.setName(selectedViewModel.getName());
-        ingredient.setQuantity(quantity);
-        ingredient.setUnit(unit);
-
-        // Fetch and set nutritional info
-        try {
-            Ingredient fullIngredient = apiService.getIngredient(ingredient.getFdcId(), quantity, unit);
-            ingredient.setNutritionalInfo(fullIngredient.getNutritionalInfo());
-            ingredient.setLastUpdated(fullIngredient.getLastUpdated());
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "API Error", "Failed to retrieve ingredient details.");
+        if (unit == null || unit.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter a unit.");
             return;
         }
 
-        IngredientViewModel ingredientViewModel = new IngredientViewModel(ingredient);
-        recipeIngredients.add(ingredientViewModel);
+        Ingredient ingredient = new Ingredient(name, quantity, unit);
+        recipeIngredients.add(ingredient);
 
         // Clear input fields
+        ingredientNameField.clear();
         quantityField.clear();
         unitField.clear();
     }
@@ -135,12 +94,12 @@ public class MainController {
     @FXML
     private void handleAddInstruction() {
         String instruction = instructionField.getText();
-        if (instruction == null || instruction.isEmpty()) {
+        if (instruction != null && !instruction.isEmpty()) {
+            instructions.add(instruction);
+            instructionField.clear();
+        } else {
             showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter an instruction.");
-            return;
         }
-        instructionsList.add(instruction);
-        instructionField.clear();
     }
 
     @FXML
@@ -159,15 +118,8 @@ public class MainController {
         Recipe recipe = new Recipe();
         recipe.setTitle(title);
 
-        List<Ingredient> ingredients = new ArrayList<>();
-        for (IngredientViewModel viewModel : recipeIngredients) {
-            ingredients.add(viewModel.getIngredient());
-        }
+        List<Ingredient> ingredients = new ArrayList<>(recipeIngredients);
         recipe.setIngredients(ingredients);
-
-        // Calculate nutritional info
-
-        recipe.setNutritionalInfo(recipeService.calculateRecipeNutrition(recipe));
 
         // Save recipe
         recipeService.addRecipe(recipe);

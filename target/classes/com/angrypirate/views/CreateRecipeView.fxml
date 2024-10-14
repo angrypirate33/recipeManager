@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.Priority?>
-<?import com.angrypirate.viewmodels.IngredientViewModel?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.angrypirate.controllers.MainController" spacing="10">
@@ -14,60 +13,13 @@
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
 
-    <!-- Search Bar -->
+    <!-- Ingredient Input -->
     <HBox spacing="5">
-        <TextField fx:id="searchField" HBox.hgrow="ALWAYS" promptText="Search for ingredients..."/>
-        <Button text="Search" onAction="#handleSearch"/>
+        <Label text="Ingredient Name:"/>
+        <TextField fx:id="ingredientNameField" HBox.hgrow="ALWAYS" promptText="Enter ingredient name..."/>
     </HBox>
 
-    <!-- Search Results -->
-    <TableView fx:id="searchResultsTable" VBox.vgrow="ALWAYS">
-        <columns>
-            <TableColumn fx:id="nameColumn" text="Name" prefWidth="150">
-                <cellValueFactory>
-                    <PropertyValueFactory property="name"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn fx:id="caloriesColumn" text="Calories" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="calories"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn fx:id="fatColumn" text="Fat (g)" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="fat"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn fx:id="proteinColumn" text="Protein (g)" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="protein"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn fx:id="carbsColumn" text="Carbs (g)" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="carbohydrates"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn fx:id="fiberColumn" text="Fiber (g)" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="fiber"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn fx:id="sugarColumn" text="Sugar (g)" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="sugar"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn fx:id="sodiumColumn" text="Sodium (mg)" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="sodium"/>
-                </cellValueFactory>
-            </TableColumn>
-        </columns>
-    </TableView>
-
-
-    <!-- Add Ingredient to Recipe -->
+    <!-- Quantity and Unit Input -->
     <HBox spacing="5">
         <Label text="Quantity:"/>
         <TextField fx:id="quantityField" prefWidth="70"/>
@@ -76,9 +28,9 @@
         <Button text="Add to Recipe" onAction="#handleAddIngredient"/>
     </HBox>
 
-    <!-- Recipe Ingredients -->
+    <!-- Recipe Ingredients Table -->
     <Label text="Recipe Ingredients:"/>
-    <TableView fx:id="recipeIngredientsTable">
+    <TableView fx:id="recipeIngredientsTable" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="recipeNameColumn" text="Name" prefWidth="200">
                 <cellValueFactory>
@@ -103,12 +55,12 @@
     <ListView fx:id="instructionsListView" VBox.vgrow="ALWAYS"/>
 
     <HBox spacing="5">
-        <TextField fx:id="instructionField" HBox.hgrow="ALWAYS" prefHeight="150" promptText="Enter instruction..."/>
+        <TextField fx:id="instructionField" HBox.hgrow="ALWAYS" promptText="Enter instruction..."/>
         <Button text="Add Instruction" onAction="#handleAddInstruction"/>
     </HBox>
 
     <!-- Save Recipe -->
-    <HBox spacing="5">
+    <HBox spacing="5" alignment="CENTER_RIGHT">
         <Label text="Recipe Title:"/>
         <TextField fx:id="recipeTitleField" HBox.hgrow="ALWAYS"/>
         <Button text="Save Recipe" onAction="#handleSaveRecipe"/>
