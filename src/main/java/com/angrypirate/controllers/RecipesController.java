@@ -6,8 +6,13 @@ import com.angrypirate.viewmodels.RecipeViewModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,12 +71,55 @@ public class RecipesController {
             showAlert(Alert.AlertType.WARNING, "Selection Error", "Please select a recipe to view.");
             return;
         }
-        // Implement logic to display recipe details
+
+        // Load the RecipeView.fxml file
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/angrypirate/views/RecipeView.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and pass the selected recipe
+            RecipeViewController controller = loader.getController();
+            controller.setRecipe(selectedRecipe.getRecipe());
+
+            // Show the recipe in a new window
+            Stage stage = new Stage();
+            stage.setTitle("View Recipe");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load recipe view.");
+        }
     }
 
     @FXML
     private void handleEditRecipe() {
-        // Implement logic to edit the selected recipe
+        RecipeViewModel selectedRecipe = recipesTable.getSelectionModel().getSelectedItem();
+        if (selectedRecipe == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "Please select a recipe to edit.");
+            return;
+        }
+        // Load the EditRecipeView.fxml file
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/angrypirate/views/EditRecipeView.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and pass the selected recipe
+            EditRecipeController controller = loader.getController();
+            controller.setRecipe(selectedRecipe.getRecipe());
+
+            // Show the edit view in a new window
+            Stage stage = new Stage();
+            stage.setTitle("Edit Recipe");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Refresh the recipes list after editing
+            stage.setOnHiding(event -> loadRecipes());
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load edit recipe view.");
+        }
     }
 
     @FXML

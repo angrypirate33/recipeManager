@@ -2,8 +2,6 @@ package com.angrypirate.controllers;
 
 import com.angrypirate.models.Ingredient;
 import com.angrypirate.models.Recipe;
-import com.angrypirate.viewmodels.IngredientViewModel;
-import com.angrypirate.services.IngredientService;
 import com.angrypirate.services.RecipeService;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,47 +9,69 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainController {
-    @FXML
-    private TextField ingredientNameField;
-    @FXML
-    private TextField quantityField;
-    @FXML
-    private TextField unitField;
-    @FXML
-    private TableView<Ingredient> recipeIngredientsTable;
-    @FXML
-    private TableColumn<Ingredient, String> recipeNameColumn;
-    @FXML
-    private TableColumn<Ingredient, String> quantityColumn;
-    @FXML
-    private TableColumn<Ingredient, String> unitColumn;
-    @FXML
-    private ListView<String> instructionsListView;
-    @FXML
-    private TextField instructionField;
+public class EditRecipeController {
+
     @FXML
     private TextField recipeTitleField;
 
-    private ObservableList<Ingredient> recipeIngredients;
-    private ObservableList<String> instructions;
-    private RecipeService recipeService = new RecipeService();
+    @FXML
+    private TextField ingredientNameField;
 
     @FXML
-    public void initialize() {
-        recipeIngredients = FXCollections.observableArrayList();
-        instructions = FXCollections.observableArrayList();
+    private TextField quantityField;
+
+    @FXML
+    private TextField unitField;
+
+    @FXML
+    private TableView<Ingredient> recipeIngredientsTable;
+
+    @FXML
+    private TableColumn<Ingredient, String> recipeNameColumn;
+
+    @FXML
+    private TableColumn<Ingredient, Double> quantityColumn;
+
+    @FXML
+    private TableColumn<Ingredient, String> unitColumn;
+
+    @FXML
+    private ListView<String> instructionsListView;
+
+    @FXML
+    private TextField instructionField;
+
+    private ObservableList<Ingredient> recipeIngredients;
+
+    private ObservableList<String> instructions;
+
+    private RecipeService recipeService = new RecipeService();
+
+    private Recipe recipe;
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+        initializeData();
+    }
+
+    private void initializeData() {
+        // Initialize ingredients and instructions
+        recipeIngredients = FXCollections.observableArrayList(recipe.getIngredients());
+        instructions = FXCollections.observableArrayList(recipe.getInstructions());
+
+        // Set data to UI components
+        recipeTitleField.setText(recipe.getTitle());
 
         recipeIngredientsTable.setItems(recipeIngredients);
         instructionsListView.setItems(instructions);
 
+        // Initialize table columns
         recipeNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        quantityColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getQuantity()).asObject().asString());
+        quantityColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getQuantity()).asObject());
         unitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnit()));
     }
 
@@ -113,28 +133,35 @@ public class MainController {
         }
 
         if (recipeIngredients.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Recipe Error", "Recipe must have at least one ingredient.");
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please add at least one ingredient.");
             return;
         }
 
-        Recipe recipe = new Recipe();
+        // Update the recipe object
         recipe.setTitle(title);
         recipe.setIngredients(new ArrayList<>(recipeIngredients));
         recipe.setInstructions(new ArrayList<>(instructions));
 
-        // Save recipe
-        recipeService.addRecipe(recipe);
+        // Update the recipe in the database
+        recipeService.updateRecipe(recipe);
 
-        // Clear recipe data
-        recipeTitleField.clear();
-        recipeIngredients.clear();
-        instructions.clear();
+        // Close the window
+        Stage stage = (Stage) recipeTitleField.getScene().getWindow();
+        stage.close();
 
-        showAlert(Alert.AlertType.INFORMATION, "Success", "Recipe saved successfully!");
+        showAlert(Alert.AlertType.INFORMATION, "Success", "Recipe updated successfully!");
+    }
+
+    @FXML
+    private void handleCancel() {
+        // Close the window without saving
+        Stage stage = (Stage) recipeTitleField.getScene().getWindow();
+        stage.close();
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
+        alert.initOwner(recipeTitleField.getScene().getWindow());
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

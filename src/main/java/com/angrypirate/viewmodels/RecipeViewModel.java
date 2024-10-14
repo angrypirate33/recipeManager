@@ -6,7 +6,6 @@ import javafx.beans.property.StringProperty;
 
 public class RecipeViewModel {
     private Recipe recipe;
-
     private StringProperty title;
 
     public RecipeViewModel(Recipe recipe) {
@@ -16,6 +15,10 @@ public class RecipeViewModel {
 
     public StringProperty titleProperty() {
         return title;
+    }
+
+    public String getTitle() {
+        return title.get();
     }
 
     public Recipe getRecipe() {

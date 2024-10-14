@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.angrypirate.controllers.EditRecipeController" spacing="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- Recipe Title -->
+    <HBox spacing="5">
+        <Label text="Recipe Title:"/>
+        <TextField fx:id="recipeTitleField" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Ingredient Input -->
+    <HBox spacing="5">
+        <Label text="Ingredient Name:"/>
+        <TextField fx:id="ingredientNameField" HBox.hgrow="ALWAYS" promptText="Enter ingredient name..."/>
+    </HBox>
+
+    <!-- Quantity and Unit Input -->
+    <HBox spacing="5">
+        <Label text="Quantity:"/>
+        <TextField fx:id="quantityField" prefWidth="70"/>
+        <Label text="Unit:"/>
+        <TextField fx:id="unitField" prefWidth="70"/>
+        <Button text="Add Ingredient" onAction="#handleAddIngredient"/>
+    </HBox>
+
+    <!-- Recipe Ingredients Table -->
+    <Label text="Recipe Ingredients:"/>
+    <TableView fx:id="recipeIngredientsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="recipeNameColumn" text="Name" prefWidth="200">
+                <cellValueFactory>
+                    <PropertyValueFactory property="name"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="quantity"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="unitColumn" text="Unit" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="unit"/>
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+    <!-- Instructions Section -->
+    <Label text="Instructions:"/>
+    <ListView fx:id="instructionsListView" prefHeight="150"/>
+
+    <HBox spacing="5">
+        <TextField fx:id="instructionField" HBox.hgrow="ALWAYS" promptText="Enter instruction..."/>
+        <Button text="Add Instruction" onAction="#handleAddInstruction"/>
+    </HBox>
+
+    <!-- Save and Cancel Buttons -->
+    <HBox spacing="5" alignment="CENTER_RIGHT">
+        <Button text="Save Changes" onAction="#handleSaveRecipe"/>
+        <Button text="Cancel" onAction="#handleCancel"/>
+    </HBox>
+</VBox>
