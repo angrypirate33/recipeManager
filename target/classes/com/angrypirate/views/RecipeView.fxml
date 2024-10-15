@@ -27,6 +27,6 @@
 
     <!-- Close Button -->
     <HBox alignment="CENTER_RIGHT">
-        <Button text="Close" onAction="#handleClose"/>
+        <Button fx:id="closeRecipeButton" text="Close" onAction="#handleClose"/>
     </HBox>
 </VBox>

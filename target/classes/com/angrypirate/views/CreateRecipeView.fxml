@@ -25,7 +25,7 @@
         <TextField fx:id="quantityField" prefWidth="70"/>
         <Label text="Unit:"/>
         <TextField fx:id="unitField" prefWidth="70"/>
-        <Button text="Add to Recipe" onAction="#handleAddIngredient"/>
+        <Button fx:id="addIngredientButton" text="Add to Recipe" onAction="#handleAddIngredient"/>
     </HBox>
 
     <!-- Recipe Ingredients Table -->
@@ -56,13 +56,13 @@
 
     <HBox spacing="5">
         <TextField fx:id="instructionField" HBox.hgrow="ALWAYS" promptText="Enter instruction..."/>
-        <Button text="Add Instruction" onAction="#handleAddInstruction"/>
+        <Button fx:id="addInstructionButton" text="Add Instruction" onAction="#handleAddInstruction"/>
     </HBox>
 
     <!-- Save Recipe -->
     <HBox spacing="5" alignment="CENTER_RIGHT">
         <Label text="Recipe Title:"/>
         <TextField fx:id="recipeTitleField" HBox.hgrow="ALWAYS"/>
-        <Button text="Save Recipe" onAction="#handleSaveRecipe"/>
+        <Button fx:id="saveRecipeButton" text="Save Recipe" onAction="#handleSaveRecipe"/>
     </HBox>
 </VBox>

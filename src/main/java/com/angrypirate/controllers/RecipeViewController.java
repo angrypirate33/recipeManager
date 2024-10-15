@@ -4,6 +4,8 @@ import com.angrypirate.models.Ingredient;
 import com.angrypirate.models.Recipe;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -20,7 +22,14 @@ public class RecipeViewController {
     @FXML
     private TextArea instructionsTextArea;
 
+    @FXML
+    private Button closeRecipeButton;
+
     private Recipe recipe;
+
+    public void initialize() {
+        setupButtonKeyPress(closeRecipeButton);
+    }
 
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
@@ -51,15 +60,13 @@ public class RecipeViewController {
         }
     }
 
-    private String formatNutritionalInfo(com.angrypirate.models.NutritionalInfo info) {
-        return String.format("Calories: %.2f kcal\nFat: %.2f g\nProtein: %.2f g\nCarbohydrates: %.2f g\nFiber: %.2f g\nSugar: %.2f g\nSodium: %.2f mg",
-                info.getCalories(),
-                info.getFat(),
-                info.getProtein(),
-                info.getCarbohydrates(),
-                info.getFiber(),
-                info.getSugar(),
-                info.getSodium());
+    private void setupButtonKeyPress(Button button) {
+        button.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                button.fire();
+                event.consume();
+            }
+        });
     }
 
     @FXML

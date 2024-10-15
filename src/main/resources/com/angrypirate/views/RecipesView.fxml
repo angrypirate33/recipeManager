@@ -17,7 +17,7 @@
     <!-- Search Bar -->
     <HBox spacing="5">
         <TextField fx:id="searchField" HBox.hgrow="ALWAYS" promptText="Search recipes..."/>
-        <Button text="Search" onAction="#handleSearch"/>
+        <Button fx:id="searchRecipesButton" text="Search" onAction="#handleSearch"/>
     </HBox>
 
     <!-- Recipes Table -->
@@ -34,8 +34,8 @@
 
     <!-- Action Buttons -->
     <HBox spacing="5" alignment="CENTER_RIGHT">
-        <Button text="View Recipe" onAction="#handleViewRecipe"/>
-        <Button text="Edit Recipe" onAction="#handleEditRecipe"/>
-        <Button text="Delete Recipe" onAction="#handleDeleteRecipe"/>
+        <Button fx:id="viewRecipeButton" text="View Recipe" onAction="#handleViewRecipe"/>
+        <Button fx:id="editRecipeButton" text="Edit Recipe" onAction="#handleEditRecipe"/>
+        <Button fx:id="deleteRecipeButton" text="Delete Recipe" onAction="#handleDeleteRecipe"/>
     </HBox>
 </VBox>

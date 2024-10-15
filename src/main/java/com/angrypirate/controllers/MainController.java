@@ -11,6 +11,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +39,12 @@ public class MainController {
     private TextField instructionField;
     @FXML
     private TextField recipeTitleField;
+    @FXML
+    private Button addIngredientButton;
+    @FXML
+    private Button addInstructionButton;
+    @FXML
+    private Button saveRecipeButton;
 
     private ObservableList<Ingredient> recipeIngredients;
     private ObservableList<String> instructions;
@@ -50,9 +58,22 @@ public class MainController {
         recipeIngredientsTable.setItems(recipeIngredients);
         instructionsListView.setItems(instructions);
 
+        setupButtonKeyPress(addIngredientButton);
+        setupButtonKeyPress(addInstructionButton);
+        setupButtonKeyPress(saveRecipeButton);
+
         recipeNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         quantityColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getQuantity()).asObject().asString());
         unitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnit()));
+    }
+
+    private void setupButtonKeyPress(Button button) {
+        button.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                button.fire();
+                event.consume();
+            }
+        });
     }
 
     @FXML
